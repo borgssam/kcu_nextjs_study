@@ -1,5 +1,6 @@
 import { STATUS_LABEL } from "@/lib/types";
 import type {Task, TaskStatus} from "@/lib/types";
+import Link from "next/link";
 
 const STATUS_BADGE:Record<TaskStatus,string> ={
   todo: "bg-slate-500",
@@ -19,7 +20,13 @@ export default function TaskCard({task}:TaskCardProps){
         <span>{task.createdAt}</span>
       </div>
 
-      <h2 className="mb-1 text-lg font-semibold">{task.title}</h2>
+      <h2 className="mb-1 text-lg font-semibold">
+        <Link href={`/tasks/${task.id}`}>
+        
+        {task.title}
+        </Link>
+
+      </h2>
       <p className="mb-4 text-sm text-gray-600">{task.content}</p>
       <p className="text-sm text-gray-500">담당: {task.assignee}</p>
     </article>
