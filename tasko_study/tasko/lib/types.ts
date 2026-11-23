@@ -23,3 +23,30 @@ export const STATUS_LABEL: Record<TaskStatus, string> = {
   doing: "진행 중",
   done: "완료",
 };
+
+// [추가 시작]
+export interface TaskWithCount extends Task {
+  commentCount: number;
+}
+
+export type TaskInput = Omit<Task, "id" | "createdAt">;
+export type CommentInput = Omit<Comment, "id" | "createdAt">;
+
+export const TASK_STATUSES: TaskStatus[] = ["todo", "doing", "done"];
+export const PAGE_SIZE = 6;
+
+export function parseStatus(value: string | null | undefined): TaskStatus | undefined {
+  if (value === "todo" || value === "doing" || value === "done") {
+    return value;
+  }
+  return undefined;
+}
+
+export function parsePage(value: string | null | undefined): number {
+  const page = Number(value);
+  if (Number.isInteger(page) && page >= 1) {
+    return page;
+  }
+  return 1;
+}
+// [추가 끝]

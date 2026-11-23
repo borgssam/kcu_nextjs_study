@@ -1,38 +1,38 @@
 // app/tasks/page.tsx
+import type { Metadata } from "next";
+import Pagination from "@/components/Pagination";
 import Section from "@/components/Section";
 import StatusFilter from "@/components/StatusFilter";
-// import TaskCard from "@/components/TaskCard";
 import TaskList from "@/components/TaskList";
-import { Task } from "@/lib/types";
+import { getTasks } from "@/lib/data";
+import { parsePage, parseStatus } from "@/lib/types";
+import {wait} from "@/lib/data";
 
-import { sampleTasks } from "@/lib/sample-data";
+export const metadata: Metadata = {
+  title: "할 일 목록",
+};
 
 interface TasksPageProps {
-  searchParams: Promise<{status?:string; page?:string}>;
+  searchParams: Promise<{ status?: string; page?: string }>;
 }
 
-export default async function TasksPage({searchParams}:TasksPageProps) {
-  const {status} = await searchParams;
-  let tasks: Task[] = sampleTasks;
-  if(status != undefined) {
-    tasks = [];
-    for(const task of sampleTasks) {
-      if( task.status === status) {
-        tasks.push(task);
-      }
-    }
-  }
-  return (
-    <div className="min-h-screen">
+export default async function TasksPage({ searchParams }: TasksPageProps) {
 
-      <main className="mx-auto max-w-5xl px-4 py-8 ">
-        <h1 className="mb-6 text-2xl font-bold">tasko 할 일 목록</h1>
-        <StatusFilter current={status} />
-        <Section title={`전체 ${sampleTasks.length}개`}>
-          <TaskList tasks={tasks}/>
-        </Section>
-    </main>
-    </div>
-    
+  // throw new Error("데이터 저장소에 연결할수 없습니다.");
+
+  const params = await searchParams;
+  const status = parseStatus(params.status);
+  const page = parsePage(params.page);
+  const result = await getTasks(status, page);
+  
+  return (
+    <>
+      <h1 className="mb-6 text-2xl font-bold">할 일 목록</h1>
+      <StatusFilter current={status} />
+      <Section title={`${result.total}개`}>
+        <TaskList tasks={result.tasks} />
+      </Section>
+      <Pagination total={result.total} page={page} status={status} />
+    </>
   );
 }
