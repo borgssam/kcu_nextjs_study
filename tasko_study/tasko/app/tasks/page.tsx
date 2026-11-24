@@ -7,6 +7,7 @@ import TaskList from "@/components/TaskList";
 import { getTasks } from "@/lib/data";
 import { parsePage, parseStatus } from "@/lib/types";
 import {wait} from "@/lib/data";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "할 일 목록",
@@ -27,7 +28,16 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
   
   return (
     <>
-      <h1 className="mb-6 text-2xl font-bold">할 일 목록</h1>
+    
+      {/* [수정 시작] 이전: <h1 className="mb-6 text-2xl font-bold">할 일 목록</h1> */}
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold">할 일 목록</h1>
+        <Link href="/tasks/new" className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
+          새 할 일
+        </Link>
+      </div>
+      {/* [수정 끝] */}
+      
       <StatusFilter current={status} />
       <Section title={`${result.total}개`}>
         <TaskList tasks={result.tasks} />
