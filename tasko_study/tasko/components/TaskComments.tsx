@@ -1,5 +1,7 @@
 // components/TaskComments.tsx
-import CommentList from "@/components/CommentList";
+// [삭제] import CommentList from "@/components/CommentList";
+// [추가]
+import CommentSection from "@/components/CommentSection";
 import { getComments } from "@/lib/data";
 
 interface TaskCommentsProps {
@@ -8,5 +10,6 @@ interface TaskCommentsProps {
 
 export default async function TaskComments({ taskId }: TaskCommentsProps) {
   const comments = await getComments(taskId);
-  return <CommentList comments={comments} />;
+  // [수정] 이전: return <CommentList comments={comments} />;
+  return <CommentSection taskId={taskId} comments={comments} />;
 }

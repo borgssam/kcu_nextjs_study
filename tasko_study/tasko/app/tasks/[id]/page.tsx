@@ -3,8 +3,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-// [추가]
-import CommentForm from "@/components/CommentForm";
 import CommentsSkeleton from "@/components/CommentsSkeleton";
 import TaskCard from "@/components/TaskCard";
 import TaskComments from "@/components/TaskComments";
@@ -67,8 +65,6 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
         </Suspense>
 
         
-        {/* [추가] */}
-        <CommentForm taskId={task.id} />
       </section>
     </div>
   );

@@ -50,3 +50,10 @@ export function parsePage(value: string | null | undefined): number {
   return 1;
 }
 // [추가 끝]
+
+// [추가 시작]
+export interface FormState {
+  error: string;
+  values?: TaskInput;
+}
+// [추가 끝]

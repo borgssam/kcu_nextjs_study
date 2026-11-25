@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { messages } from "./store";
 
 export async function addMessageAction(formData: FormData) {
-  //await new Promise((resolve) => setTimeout(resolve, 1500) ); //1.5초 대기(테스용)
+  await new Promise((resolve) => setTimeout(resolve, 1500) ); //1.5초 대기(테스용)
 
   const value = formData.get("message");
   let text ="";

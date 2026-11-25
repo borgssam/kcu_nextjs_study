@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { addComment, createTask, deleteTask, updateTask } from "@/lib/data";
 import { parseStatus } from "@/lib/types";
-import type { TaskInput } from "@/lib/types";
+import type { FormState, TaskInput } from "@/lib/types";
 
 function readText(formData: FormData, name: string): string {
   const value = formData.get(name);
@@ -28,15 +28,39 @@ function readTaskInput(formData: FormData): TaskInput {
   };
 }
 
-export async function createTaskAction(formData: FormData) {
-  const task = await createTask(readTaskInput(formData));
+
+function validateTaskInput(input: TaskInput): string {
+  if (input.title === "") {
+    return "제목을 입력하세요.";
+  }
+  if (input.title.length > 50) {
+    return "제목은 50자 이하로 입력하세요.";
+  }
+  if (input.assignee === "") {
+    return "담당자를 입력하세요.";
+  }
+  return "";
+}
+
+export async function createTaskAction(prevState: FormState, formData: FormData): Promise<FormState> {
+  const input = readTaskInput(formData);
+  const error = validateTaskInput(input); //유효성체크
+  if (error !== "") {
+    return { error: error, values: input };
+  }
+  const task = await createTask(input);
   revalidatePath("/tasks");
   redirect(`/tasks/${task.id}`);
 }
 
-export async function updateTaskAction(formData: FormData) {
+export async function updateTaskAction(prevState: FormState, formData: FormData): Promise<FormState> {
   const id = Number(readText(formData, "id"));
-  await updateTask(id, readTaskInput(formData));
+  const input = readTaskInput(formData);
+  const error = validateTaskInput(input); //유효성체크
+  if (error !== "") {
+    return { error: error, values: input };
+  }
+  await updateTask(id, input);
   revalidatePath("/tasks");
   revalidatePath(`/tasks/${id}`);
   redirect(`/tasks/${id}`);
@@ -49,7 +73,19 @@ export async function deleteTaskAction(formData: FormData) {
   redirect("/tasks");
 }
 
+// export async function addCommentAction(formData: FormData) {
+//   const taskId = Number(readText(formData, "taskId"));
+//   await addComment({
+//     taskId: taskId,
+//     author: readText(formData, "author"),
+//     content: readText(formData, "content"),
+//   });
+//   revalidatePath(`/tasks/${taskId}`);
+// }
+// lib/actions.ts (addCommentAction 함수)
 export async function addCommentAction(formData: FormData) {
+  // [추가]
+  await new Promise((resolve) => setTimeout(resolve, 2000)); //시간지연추가 2초
   const taskId = Number(readText(formData, "taskId"));
   await addComment({
     taskId: taskId,
